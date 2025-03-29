@@ -96,17 +96,10 @@
 				</configuration>
 			</plugin>
 			<plugin>
-        		<groupId>com.spotify</groupId>
-        		<artifactId>dockerfile-maven-plugin</artifactId>
-        		<version>1.4.13</version>
-        		<executions>
-            		<execution>
-                		<goals>
-                    		<goal>build</goal>
-                		</goals>
-            		</execution>
-        		</executions>
-    		</plugin>
+    			<groupId>com.spotify</groupId>
+    			<artifactId>dockerfile-maven-plugin</artifactId>
+    			<version>1.4.13</version>  <!-- Tente verificar se há uma versão mais recente -->
+			</plugin>
 		</plugins>
 	</build>
 
