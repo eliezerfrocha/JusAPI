@@ -54,6 +54,18 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("User not found for update.");
         }
+
+         // Valida a senha
+        if (!isValidPassword(user.getPassword())) {
+            throw new IllegalArgumentException("Password must be at least 8 characters long and contain letters and numbers.");
+        }
+    
+        // Criptografa a senha antes de salvar
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    
+        //return userRepository.save(user);
+
         user.setId(id); // Garantir que o ID seja o correto para atualização
         return userRepository.save(user);
     }
