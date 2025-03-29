@@ -11,7 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(columnDefinition = "BINARY(16)")
@@ -23,10 +22,4 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @PrePersist
-    public void gerarUUID() {
-        if (id == null) {
-            id = UUID.randomUUID();
-        }
-    }
 }

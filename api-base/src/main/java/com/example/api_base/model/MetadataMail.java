@@ -25,10 +25,10 @@ public class MetadataMail {
     private String subject;
 
     @Column(nullable = false, length = 100)
-    private String from;
+    private String sender;
 
     @Column(nullable = false, length = 100)
-    private String to;
+    private String recipient;
 
     @Column(nullable = false)
     private String date;

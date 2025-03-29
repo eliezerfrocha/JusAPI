@@ -1,11 +1,14 @@
 package com.example.api_base.API;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class ApiResponse<T> {
-    private String message;
-    private int status;
-    private T data;
+    // Getters
+    private final String message;
+    private final int status;
+    private final T data;
 
     // Construtor privado para forçar o uso dos métodos estáticos
     private ApiResponse(String message, HttpStatus status, T data) {
@@ -40,16 +43,4 @@ public class ApiResponse<T> {
         return new ApiResponse<>(message, HttpStatus.INTERNAL_SERVER_ERROR, null);
     }
 
-    // Getters
-    public String getMessage() {
-        return message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public T getData() {
-        return data;
-    }
 }
