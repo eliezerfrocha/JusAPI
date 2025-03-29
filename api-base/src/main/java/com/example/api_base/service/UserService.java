@@ -29,13 +29,13 @@ public class UserService {
     }
 
     // Buscar usuário por ID
-    public User getUserById(UUID id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() 
             -> new IllegalArgumentException("Usuário não encontrado"));
     }
 
     // Atualizar usuário
-    public User updateUser(UUID id, User user) {
+    public User updateUser(Long id, User user) {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("Usuário não encontrado para atualização");
         }
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     // Deletar usuário
-    public void deleteUser(UUID id) {
+    public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("Usuário não encontrado para deleção");
         }

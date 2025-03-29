@@ -12,9 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column()
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -22,10 +22,4 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @PrePersist
-    public void gerarUUID() {
-        if (id == null) {
-            id = UUID.randomUUID();
-        }
-    }
 }
