@@ -26,13 +26,13 @@ public class UserController {
         try {
             User savedUser = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponse.created("Sucesso!", savedUser));
+                    .body(ApiResponse.created("Success!", savedUser));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.badRequest(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(ApiResponse.internalServerError("Erro ao criar o usuário."));
+                    .body(ApiResponse.internalServerError("Error creating the user."));
         }
     }
 
@@ -41,13 +41,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         try {
             List<User> users = userService.getAllUsers();
-            return ResponseEntity.ok(ApiResponse.success("Sucesso!", users));
+            return ResponseEntity.ok(ApiResponse.success("Success!", users));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.badRequest(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(ApiResponse.internalServerError("Erro ao buscar usuários."));
+                    .body(ApiResponse.internalServerError("Error fetching users."));
         }
     }
 
@@ -56,13 +56,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<User>> getUser(@PathVariable UUID id) {
         try {
             User user = userService.getUserById(id);
-            return ResponseEntity.ok(ApiResponse.success("Sucesso!", user));
+            return ResponseEntity.ok(ApiResponse.success("Success!", user));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.badRequest(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(ApiResponse.internalServerError("Erro interno ao buscar usuário."));
+                    .body(ApiResponse.internalServerError("Internal error while fetching user."));
         }
     }
 
@@ -71,13 +71,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable UUID id, @RequestBody User user) {
         try {
             User updatedUser = userService.updateUser(id, user);
-            return ResponseEntity.ok(ApiResponse.success("Sucesso!", updatedUser));
+            return ResponseEntity.ok(ApiResponse.success("Success!", updatedUser));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.badRequest(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(ApiResponse.internalServerError("Erro interno ao atualizar usuário."));
+                    .body(ApiResponse.internalServerError("Internal error while updating user."));
         }
     }
 
@@ -86,13 +86,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable UUID id) {
         try {
             userService.deleteUser(id);
-            return ResponseEntity.ok(ApiResponse.success("Sucesso!"));
+            return ResponseEntity.ok(ApiResponse.success("Success!"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.badRequest(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(ApiResponse.internalServerError("Erro interno ao deletar usuário."));
+                    .body(ApiResponse.internalServerError("Internal error while deleting user."));
         }
     }
 }
