@@ -23,6 +23,9 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
+    @Column(nullable = false, length = 255)
+    private String password;
+
     @PrePersist
     public void gerarUUID() {
         if (id == null) {
