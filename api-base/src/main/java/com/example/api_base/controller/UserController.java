@@ -1,9 +1,9 @@
 package com.example.api_base.controller;
-
 import com.example.api_base.model.User;
 import com.example.api_base.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
 

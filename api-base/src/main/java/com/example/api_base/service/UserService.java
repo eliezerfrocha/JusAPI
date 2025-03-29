@@ -20,19 +20,20 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Usuário já cadastrado!");
         }
-    
+
         // Valida a senha
         if (!isValidPassword(user.getPassword())) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long and contain letters and numbers.");
+            throw new IllegalArgumentException(
+                    "Password must be at least 8 characters long and contain letters and numbers.");
         }
-    
+
         // Criptografa a senha antes de salvar
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-    
+
         return userRepository.save(user);
     }
-    
+
     // Método para validar a senha
     private boolean isValidPassword(String password) {
         return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
@@ -45,8 +46,7 @@ public class UserService {
 
     // Buscar usuário por ID
     public User getUserById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() 
-            -> new IllegalArgumentException("Usuário não encontrado"));
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
     // Atualizar usuário
@@ -54,6 +54,19 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("Usuário não encontrado para atualização");
         }
+
+        // Valida a senha
+        if (!isValidPassword(user.getPassword())) {
+            throw new IllegalArgumentException(
+                    "Password must be at least 8 characters long and contain letters and numbers.");
+        }
+
+        // Criptografa a senha antes de salvar
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // return userRepository.save(user);
+
         user.setId(id); // Garantir que o ID seja o correto para atualização
         return userRepository.save(user);
     }
