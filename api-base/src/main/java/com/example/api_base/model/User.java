@@ -12,9 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
 
     @Column(nullable = false, length = 100)
     private String name;
