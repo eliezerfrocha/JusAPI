@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MetadataMail {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(columnDefinition = "BINARY(16)")
@@ -23,11 +24,11 @@ public class MetadataMail {
     @Column(nullable = false, length = 200)
     private String subject;
 
-    @Column(nullable = false, length = 100)
-    private String sender;
+    @Column(name = "sender", nullable = false, length = 100)
+    private String from;
 
-    @Column(nullable = false, length = 100)
-    private String recipient;
+    @Column(name = "recipient", nullable = false, length = 100)
+    private String to;
 
     @Column(nullable = false)
     private String date;
