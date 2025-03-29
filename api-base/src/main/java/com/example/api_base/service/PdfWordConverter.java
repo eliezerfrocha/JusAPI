@@ -1,34 +1,24 @@
-package com.example.converter;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package com.example.api_base.service;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * Classe para converter documentos PDF e Word moderno (DOCX) para formato JSON
- */
+@Service
 public class PdfWordConverter {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    /**
-     * Converte um arquivo para JSON, detectando automaticamente o tipo (PDF ou DOCX)
-     *
-     * @param filePath Caminho do arquivo a ser convertido
-     * @return String contendo o JSON gerado
-     * @throws IOException Se ocorrer erro na leitura ou conversão
-     */
     public String convertToJson(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -49,42 +39,66 @@ public class PdfWordConverter {
         return mapper.writeValueAsString(result);
     }
 
-    /**
-     * Converte um arquivo PDF para um Map que pode ser serializado como JSON
-     */
     private Map<String, Object> convertPdfToMap(File file) throws IOException {
         Map<String, Object> docMap = new HashMap<>();
 
         try (PDDocument document = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
+            stripper.setLineSeparator("\n");
+            stripper.setParagraphEnd("\n\n");
+            stripper.setSortByPosition(true);  // Importante para PDFs com múltiplas colunas
+            stripper.setAddMoreFormatting(true);  // Melhora a formatação
 
-            // Informações básicas do documento
+            // Informações básicas
             docMap.put("tipo", "pdf");
             docMap.put("nome", file.getName());
             docMap.put("paginas", document.getNumberOfPages());
 
-            // Extraindo o conteúdo do PDF
-            String content = stripper.getText(document);
-            docMap.put("conteudo", content);
+            // Extrai todo o conteúdo
+            String fullContent = stripper.getText(document);
+            docMap.put("conteudo", fullContent.trim());
 
-            // Dividindo o conteúdo por páginas, se necessário
+            // Extrai por páginas e lista palavras
             if (document.getNumberOfPages() > 1) {
                 List<String> pageContents = new ArrayList<>();
+                List<List<String>> pageWords = new ArrayList<>();
+
                 for (int i = 1; i <= document.getNumberOfPages(); i++) {
                     stripper.setStartPage(i);
                     stripper.setEndPage(i);
-                    pageContents.add(stripper.getText(document));
+                    String pageText = stripper.getText(document).trim();
+                    pageContents.add(pageText);
+
+                    // Extrai palavras da página
+                    List<String> words = extractWordsFromText(pageText);
+                    pageWords.add(words);
                 }
+
                 docMap.put("paginas_conteudo", pageContents);
+                docMap.put("palavras_por_pagina", pageWords);  // Nova lista de palavras
+            } else {
+                // Extrai palavras para PDF de uma página
+                List<String> words = extractWordsFromText(fullContent);
+                docMap.put("palavras", words);
             }
         }
 
         return docMap;
     }
 
-    /**
-     * Converte um arquivo DOCX (Word moderno) para um Map que pode ser serializado como JSON
-     */
+    private List<String> extractWordsFromText(String text) {
+        if (text == null || text.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Remove pontuação e divide em palavras
+        return Arrays.stream(text.split("\\s+"))
+                .map(word -> word.replaceAll("[^a-zA-Z0-9áéíóúÁÉÍÓÚãõâêîôûàèìòùçÇ]", ""))
+                .filter(word -> !word.isEmpty())
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+    }
+
     private Map<String, Object> convertDocxToMap(File file) throws IOException {
         Map<String, Object> docMap = new HashMap<>();
 
@@ -92,8 +106,6 @@ public class PdfWordConverter {
              XWPFDocument document = new XWPFDocument(fis)) {
 
             XWPFWordExtractor extractor = new XWPFWordExtractor(document);
-
-            // Informações básicas do documento
             docMap.put("tipo", "docx");
             docMap.put("nome", file.getName());
 
@@ -101,7 +113,7 @@ public class PdfWordConverter {
             String content = extractor.getText();
             docMap.put("conteudo", content);
 
-            // Informações adicionais disponíveis
+            // Adicionando metadados, se disponíveis
             if (document.getProperties() != null && document.getProperties().getCoreProperties() != null) {
                 Map<String, Object> metadados = new HashMap<>();
                 if (document.getProperties().getCoreProperties().getCreator() != null) {
@@ -117,25 +129,5 @@ public class PdfWordConverter {
         }
 
         return docMap;
-    }
-
-    /**
-     * Exemplo de uso da classe
-     */
-    public static void main(String[] args) {
-        try {
-            PdfWordConverter converter = new PdfWordConverter();
-
-            // Exemplo com arquivo PDF
-            String jsonPdf = converter.convertToJson("caminho/para/seu/arquivo.pdf");
-            System.out.println("JSON do PDF: " + jsonPdf);
-
-            // Exemplo com arquivo Word
-            String jsonWord = converter.convertToJson("caminho/para/seu/arquivo.docx");
-            System.out.println("JSON do Word: " + jsonWord);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
