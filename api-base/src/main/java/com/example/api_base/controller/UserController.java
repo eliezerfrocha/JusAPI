@@ -3,6 +3,7 @@ package com.example.api_base.controller;
 import com.example.api_base.API.ApiResponse;
 import com.example.api_base.model.User;
 import com.example.api_base.service.UserService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Criar um usuário
     @PostMapping
     public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
         try {
@@ -36,7 +36,6 @@ public class UserController {
         }
     }
 
-    // Listar todos os usuários
     @GetMapping
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         try {
@@ -51,7 +50,6 @@ public class UserController {
         }
     }
 
-    // Buscar usuário por ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> getUser(@PathVariable UUID id) {
         try {
@@ -66,7 +64,6 @@ public class UserController {
         }
     }
 
-    // Atualizar usuário
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable UUID id, @RequestBody User user) {
         try {
@@ -81,7 +78,6 @@ public class UserController {
         }
     }
 
-    // Deletar usuário
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable UUID id) {
         try {
