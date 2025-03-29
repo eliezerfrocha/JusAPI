@@ -18,7 +18,7 @@ public class UserService {
 
     public User saveUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Usuário já cadastrado!");
+            throw new IllegalArgumentException("User already registered!");
         }
 
         // Valida a senha
@@ -52,7 +52,7 @@ public class UserService {
     // Atualizar usuário
     public User updateUser(UUID id, User user) {
         if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("Usuário não encontrado para atualização");
+            throw new IllegalArgumentException("User not found for update.");
         }
 
         // Valida a senha
@@ -74,7 +74,7 @@ public class UserService {
     // Deletar usuário
     public void deleteUser(UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("Usuário não encontrado para deleção");
+            throw new IllegalArgumentException("User not found for deletion.");
         }
         userRepository.deleteById(id);
     }
