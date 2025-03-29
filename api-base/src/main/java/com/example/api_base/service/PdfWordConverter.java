@@ -113,6 +113,8 @@ public class PdfWordConverter {
             String content = extractor.getText();
             docMap.put("conteudo", content);
 
+            extractor.close();
+
             // Adicionando metadados, se disponíveis
             if (document.getProperties() != null && document.getProperties().getCoreProperties() != null) {
                 Map<String, Object> metadados = new HashMap<>();
