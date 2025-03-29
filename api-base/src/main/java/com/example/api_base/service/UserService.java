@@ -11,24 +11,24 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public User saveUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("User already registered!");
+            throw new IllegalArgumentException("Usuário já cadastrado!");
         }
 
         // Valida a senha
         if (!isValidPassword(user.getPassword())) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long and contain letters and numbers.");
+            throw new IllegalArgumentException(
+                    "Password must be at least 8 characters long and contain letters and numbers.");
         }
 
         // Criptografa a senha antes de salvar
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
@@ -39,35 +39,42 @@ public class UserService {
         return password != null && password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
     }
 
+    // Listar todos os usuários
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // Buscar usuário por ID
     public User getUserById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
+    // Atualizar usuário
     public User updateUser(UUID id, User user) {
         if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found for update.");
+            throw new IllegalArgumentException("Usuário não encontrado para atualização");
         }
 
         // Valida a senha
         if (!isValidPassword(user.getPassword())) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long and contain letters and numbers.");
+            throw new IllegalArgumentException(
+                    "Password must be at least 8 characters long and contain letters and numbers.");
         }
 
         // Criptografa a senha antes de salvar
-        user.setId(id); // Garante que o ID seja o correto para atualização
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        // return userRepository.save(user);
+
+        user.setId(id); // Garantir que o ID seja o correto para atualização
         return userRepository.save(user);
     }
 
+    // Deletar usuário
     public void deleteUser(UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found for deletion.");
+            throw new IllegalArgumentException("Usuário não encontrado para deleção");
         }
         userRepository.deleteById(id);
     }

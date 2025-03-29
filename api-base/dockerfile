@@ -1,27 +1,11 @@
-# Etapa 1: Imagem para build com Maven
-FROM maven:3.8-openjdk-17 as maven-build
-
-# Defina o diretório de trabalho para o build
-WORKDIR /build
-
-# Copie o arquivo pom.xml e baixe as dependências
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copie o código fonte
-COPY src/ ./src/
-
-# Execute o build com Maven
-RUN mvn clean package -DskipTests
-
-# Etapa 2: Imagem final para execução
-FROM openjdk:17-jdk-slim as runtime
+# Etapa 1: Escolha uma imagem base com o JDK adequado
+FROM openjdk:17-jdk-slim as build
 
 # Defina o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copie o arquivo JAR gerado na etapa de build
-COPY --from=maven-build /build/target/*.jar app.jar
+# Copie o arquivo JAR gerado para o diretório de trabalho no container
+COPY target/*.jar app.jar
 
 # Comando para rodar a aplicação Spring Boot
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
