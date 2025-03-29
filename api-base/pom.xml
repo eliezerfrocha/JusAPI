@@ -55,6 +55,26 @@
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-web</artifactId>
     	</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.27</version>
+		</dependency>
+
+		<!-- Dependência para Apache POI (Word) -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.3</version>
+		</dependency>
+
+		<!-- Dependência para Jackson (para conversão para JSON) -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.15.2</version>
+		</dependency>
     
     	<!-- Spring Security OAuth2 Client -->
     	<!-- <dependency>
