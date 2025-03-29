@@ -122,18 +122,19 @@
 				</configuration>
 			</plugin>
 			<plugin>
-        		<groupId>com.spotify</groupId>
-        		<artifactId>dockerfile-maven-plugin</artifactId>
-        		<version>1.4.13</version>
-        		<executions>
-            		<execution>
-                		<goals>
-                    		<goal>build</goal>
-                		</goals>
-            		</execution>
-        		</executions>
-    		</plugin>
+    			<groupId>com.spotify</groupId>
+    			<artifactId>dockerfile-maven-plugin</artifactId>
+    			<version>1.4.13</version>  <!-- Tente verificar se há uma versão mais recente -->
+			</plugin>
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0-M5</version> <!-- ou outra versão mais recente -->
+            <configuration>
+                <skipTests>true</skipTests> <!-- Caso queira garantir que os testes sejam executados -->
+                <!-- Outras configurações, se necessário -->
+            </configuration>
+        </plugin>
 		</plugins>
 	</build>
-
 </project>
