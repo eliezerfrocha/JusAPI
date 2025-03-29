@@ -11,7 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MetadataMail {
-
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(columnDefinition = "BINARY(16)")
