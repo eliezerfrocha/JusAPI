@@ -24,10 +24,10 @@ public class MetadataMail {
     @Column(nullable = false, length = 200)
     private String subject;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "sender", nullable = false, length = 100)
     private String from;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "recipient", nullable = false, length = 100)
     private String to;
 
     @Column(nullable = false)
