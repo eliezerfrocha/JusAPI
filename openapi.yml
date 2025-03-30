@@ -1,0 +1,268 @@
+openapi: 3.0.3
+info:
+  title: API de Processos
+  description: API para gerenciamento de processos, com rotas de Portal, Processos e Processo Detalhado.
+  version: "1.0.0"
+servers:
+  - url: https://api.exemplo.com/v1
+paths:
+  /portal:
+    get:
+      summary: Obter resumo do portal
+      description: Retorna dados de destaque (processos críticos, inconsistências etc.)
+      responses:
+        "200":
+          description: Resumo do portal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortalResumo"
+
+  /processos:
+    get:
+      summary: Listar processos
+      description: Retorna lista de processos com filtro por número, polo ativo, polo passivo e período.
+      parameters:
+        - in: query
+          name: numero
+          schema:
+            type: string
+        - in: query
+          name: poloAtivo
+          schema:
+            type: string
+        - in: query
+          name: poloPassivo
+          schema:
+            type: string
+        - in: query
+          name: dataInicio
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataFim
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Página atual para paginação
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: Limite de itens por página
+      responses:
+        "200":
+          description: Lista de processos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessoList"
+    post:
+      summary: Criar processo
+      description: Cria um novo processo no sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProcessoInput"
+      responses:
+        "201":
+          description: Processo criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Processo"
+
+  /processos/{id}:
+    get:
+      summary: Detalhar processo
+      description: Retorna dados completos de um processo específico (incluindo histórico).
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dados detalhados do processo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcessoDetalhado"
+        "404":
+          description: Processo não encontrado
+    put:
+      summary: Atualizar processo
+      description: Atualiza dados de um processo (natureza, prazo, anotação etc.).
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProcessoInput"
+      responses:
+        "200":
+          description: Processo atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Processo"
+        "404":
+          description: Processo não encontrado
+    delete:
+      summary: Excluir processo
+      description: Remove ou “arquiva” o processo (dependendo da regra de negócio).
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Processo excluído com sucesso
+        "404":
+          description: Processo não encontrado
+
+components:
+  schemas:
+    PortalResumo:
+      type: object
+      properties:
+        resumo:
+          type: object
+          properties:
+            processosCriticos:
+              type: integer
+            processosInconsistentes:
+              type: integer
+        listaProcessosCriticos:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              numeroProcesso:
+                type: string
+              prazoFinal:
+                type: string
+                format: date
+              inconsistencia:
+                type: boolean
+
+    Processo:
+      type: object
+      properties:
+        id:
+          type: integer
+        numero:
+          type: string
+        poloAtivo:
+          type: string
+        poloPassivo:
+          type: string
+        natureza:
+          type: string
+        valorCausa:
+          type: number
+          format: float
+        prazoFinal:
+          type: string
+          format: date
+        ultimaMovimentacao:
+          type: string
+          format: date
+        inconsistencia:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProcessoDetalhado:
+      allOf:
+        - $ref: "#/components/schemas/Processo"
+        - type: object
+          properties:
+            anotacaoUsuario:
+              type: string
+            historicoMovimentacoes:
+              type: array
+              items:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    format: date
+                  status:
+                    type: string
+                  observacao:
+                    type: string
+                  anexos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        nomeArquivo:
+                          type: string
+                        url:
+                          type: string
+
+    ProcessoInput:
+      type: object
+      properties:
+        numero:
+          type: string
+        poloAtivo:
+          type: string
+        poloPassivo:
+          type: string
+        natureza:
+          type: string
+        valorCausa:
+          type: number
+          format: float
+        prazoFinal:
+          type: string
+          format: date
+        anotacaoUsuario:
+          type: string
+        inconsistencia:
+          type: boolean
+        observacao:
+          type: string
+
+    ProcessoList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Processo"
+        pagination:
+          type: object
+          properties:
+            currentPage:
+              type: integer
+            totalPages:
+              type: integer
+            totalItems:
+              type: integer
