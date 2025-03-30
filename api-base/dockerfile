@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=maven-build /build/target/*.jar app.jar
 
 # Comando para rodar a aplicação Spring Boot
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-XX:InitialRAMPercentage=50.0", "-XX:MaxRAMPercentage=75.0", "-XX:+UseG1GC", "-jar", "/app/app.jar"]
 
 # Exponha a porta que a aplicação estará rodando
 EXPOSE 8080
